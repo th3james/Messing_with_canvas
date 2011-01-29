@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+  div.canvas_container {
+    text-align: center;
+  }
+
+</style>
+<script type="text/javascript"
+  src="http://maps.google.com/maps/api/js?sensor=true">
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript">
+
+  window.onload = function() {
+
+    var drawingCanvas = document.getElementById('myDrawing');
+    
+    if(drawingCanvas && drawingCanvas.getContext) {
+      // Initaliase a 2-dimensional drawing context
+      var context = drawingCanvas.getContext('2d');
+
+      // Create the yellow face
+      context.strokeStyle = "#000000";
+      context.fillStyle = "#FFFF00";
+      context.beginPath();
+      context.arc(100,100,50,0,Math.PI*2,true);
+      context.closePath();
+      context.stroke();
+      context.fill();
+
+      // Draw some random shit
+      context.strokeStyle = "red";
+      context.fillStyle = "red";
+      context.beginPath();
+      context.arc(100,100,50,0,Math.PI*2,true);
+      context.closePath();
+      context.stroke();
+      context.fill();
+    }
+  }
+
+</script>
+</head>
+<body>
+  <div class="canvas_container">
+    <canvas id="myDrawing" width="200" height="200">
+      <p>Your browser doesn't support canvas.</p>
+    </canvas>
+  </div>
+
+</body>
+</html>
+
