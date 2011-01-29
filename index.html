@@ -13,52 +13,132 @@
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript">
+  var WIDTH;
+  var HEIGHT;
+  var g;
+  var rightDown = false;
+  var leftDown = false;
+  var carray = new Array();
 
-  window.onload = function() {
 
-    var drawingCanvas = document.getElementById('myDrawing');
-    
-    if(drawingCanvas && drawingCanvas.getContext) {
-      // Initaliase a 2-dimensional drawing context
-      var context = drawingCanvas.getContext('2d');
+  // Main Function To Start
+  function start()
+  {
+    g = $('#canvas')[0].getContext("2d");
+    WIDTH = $("#canvas").width();
+    HEIGHT = $("#canvas").height();
+    carray[0] = new Circle(150,150,20);
+    carray[1] = new Circle(150,150,15);
+    carray[2] = new Circle(150,150,10);
+    carray[3] = new Circle(150,150,5);
+    return setInterval(draw, 10);
+  }
 
-      // Create the yellow face
-      context.strokeStyle = "#000000";
-      context.fillStyle = "#FFFF00";
-      context.beginPath();
-      context.arc(100,100,50,0,Math.PI*2,true);
-      context.closePath();
-      context.stroke();
-      context.fill();
 
-      // Draw some random shit
-      context.strokeStyle = "#FF0000";
-      context.fillStyle = "#FF0000";
-      context.beginPath();
-      context.moveTo(150,150)
-      context.lineTo(50,50)
-      context.moveTo(50,150)
-      context.lineTo(150,50)
-      context.closePath();
-      context.stroke();
-      context.fill();
+  // Get Key Input
+  function onKeyDown(evt) 
+  {
+    if(evt.keyCode == 39) rightDown = true;
+    else if(evt.keyCode == 37) leftDown = true;
+    dx = dx*-1;
+  }
 
-      //context.drawImage(image, XPos, YPos, Width, Height);
+  function onKeyUp(evt) 
+  {
+    if (evt.keyCode == 39) rightDown = false;
+    else if (evt.keyCode == 37) leftDown = false;
+    dx = dx*-1;
+  }
+
+
+  // Circle Class 
+  function Circle(x,y,r){
+    this.x = x;
+    this.y = y;
+    this.r = r;
+    this.dx = Math.ceil(Math.random()*7);
+    this.dy = Math.ceil(Math.random()*7);
+
+    this.draw = function(){
+      g.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
+      x = this.x
+      y = this.x
 
       channelImg = new Image()
       channelImg.onload = function() {
-        context.drawImage(channelImg, 50, 50, 50, 50);
+        g.drawImage(channelImg, x, y, 50, 50);
       }
       channelImg.src = 'channel.png';
+    }
 
+    this.getX = function()
+    {
+      return x;
+    }
+
+    this.getY = function()
+    {
+      return this.y;
+    }
+
+    this.move = function()
+    {   
+      this.x += this.dx;
+      this.y += this.dy;
+
+      if(this.x > WIDTH || this.x < 0)
+      {
+        this.dx = this.dx*-1;
+      }
+
+      if(this.y > HEIGHT || this.y < 0)
+      {
+        this.dy = this.dy*-1;
+      }
     }
   }
+
+
+  // Draw Function
+  function draw()
+  {
+    clear();
+    var i;
+    for (i=0; i<carray.length; i++)
+    {
+      carray[i].move();
+      carray[i].draw();
+    }
+  }
+
+  function clear() 
+  {
+    g.fillStyle = "#fff";
+    g.fillRect(0, 0, WIDTH, HEIGHT);
+  }
+
+  // Use JQuery to wait for document load
+  $(document).ready(function(){
+    start();
+  });
+
+  $(document).keydown(onKeyDown);
+  $(document).keyup(onKeyUp);
+
+
+  //context.drawImage(image, XPos, YPos, Width, Height);
+
+  channelImg = new Image()
+    channelImg.onload = function() {
+      context.drawImage(channelImg, 50, 50, 50, 50);
+    }
+  channelImg.src = 'channel.png';
 
 </script>
 </head>
 <body>
   <div class="canvas_container">
-    <canvas id="myDrawing" width="500" height="500">
+    <canvas id="canvas" width="500" height="500">
       <p>Your browser doesn't support canvas.</p>
     </canvas>
   </div>
