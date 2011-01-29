@@ -32,13 +32,25 @@
       context.fill();
 
       // Draw some random shit
-      context.strokeStyle = "red";
-      context.fillStyle = "red";
+      context.strokeStyle = "#FF0000";
+      context.fillStyle = "#FF0000";
       context.beginPath();
-      context.arc(100,100,50,0,Math.PI*2,true);
+      context.moveTo(150,150)
+      context.lineTo(50,50)
+      context.moveTo(50,150)
+      context.lineTo(150,50)
       context.closePath();
       context.stroke();
       context.fill();
+
+      //context.drawImage(image, XPos, YPos, Width, Height);
+
+      channelImg = new Image()
+      channelImg.onload = function() {
+        context.drawImage(channelImg, 50, 50, 50, 50);
+      }
+      channelImg.src = 'channel.png';
+
     }
   }
 
@@ -46,7 +58,7 @@
 </head>
 <body>
   <div class="canvas_container">
-    <canvas id="myDrawing" width="200" height="200">
+    <canvas id="myDrawing" width="500" height="500">
       <p>Your browser doesn't support canvas.</p>
     </canvas>
   </div>
