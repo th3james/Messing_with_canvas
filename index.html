@@ -22,22 +22,21 @@
 
 
   // Main Function To Start
-  function start()
-  {
+  function start(){
     g = $('#canvas')[0].getContext("2d");
     WIDTH = $("#canvas").width();
     HEIGHT = $("#canvas").height();
-    carray[0] = new Circle(150,150,20);
-    carray[1] = new Circle(150,150,15);
-    carray[2] = new Circle(150,150,10);
-    carray[3] = new Circle(150,150,5);
+    carray[0] = new ChannelFlags(150,150,20);
+    carray[1] = new ChannelFlags(150,150,15);
+    carray[2] = new ChannelFlags(150,150,10);
+    carray[3] = new ChannelFlags(150,150,5);
+    player = new Playa(250,250);
     return setInterval(draw, 10);
   }
 
 
   // Get Key Input
-  function onKeyDown(evt) 
-  {
+  function onKeyDown(evt){
     if(evt.keyCode == 39) rightDown = true;
     else if(evt.keyCode == 37) leftDown = true;
     dx = dx*-1;
@@ -51,8 +50,8 @@
   }
 
 
-  // Circle Class 
-  function Circle(x,y,r){
+  // ChannelFlags Class 
+  function ChannelFlags(x,y,r){
     this.x = x;
     this.y = y;
     this.r = r;
@@ -62,7 +61,7 @@
     this.draw = function(){
       g.arc(this.x, this.y, this.r, 0, Math.PI*2, true);
       x = this.x
-      y = this.x
+      y = this.y
 
       channelImg = new Image()
       channelImg.onload = function() {
@@ -98,6 +97,46 @@
     }
   }
 
+  // ChannelFlags Class 
+  function Playa(x,y){
+    this.x = x;
+    this.y = y;
+
+    this.draw = function(){
+      g.beginPath();
+      g.moveTo(x, y - 20);
+      g.lineTo(x + 7, y + 5);
+      g.lineTo(x - 7, y + 5);
+      g.lineTo(x - 7, y + 5);
+      g.stroke();
+    }
+
+    this.getX = function()
+    {
+      return x;
+    }
+
+    this.getY = function()
+    {
+      return this.y;
+    }
+
+    this.move = function()
+    {   
+      this.x += this.dx;
+      this.y += this.dy;
+
+      if(this.x > WIDTH || this.x < 0)
+      {
+        this.dx = this.dx*-1;
+      }
+
+      if(this.y > HEIGHT || this.y < 0)
+      {
+        this.dy = this.dy*-1;
+      }
+    }
+  }
 
   // Draw Function
   function draw()
@@ -109,6 +148,7 @@
       carray[i].move();
       carray[i].draw();
     }
+    player.draw();
   }
 
   function clear() 
@@ -128,11 +168,11 @@
 
   //context.drawImage(image, XPos, YPos, Width, Height);
 
-  channelImg = new Image()
-    channelImg.onload = function() {
-      context.drawImage(channelImg, 50, 50, 50, 50);
-    }
-  channelImg.src = 'channel.png';
+//  channelImg = new Image()
+//    channelImg.onload = function() {
+//      context.drawImage(channelImg, 50, 50, 50, 50);
+//    }
+//  channelImg.src = 'channel.png';
 
 </script>
 </head>
