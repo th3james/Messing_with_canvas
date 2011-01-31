@@ -16,7 +16,9 @@
   var WIDTH;
   var HEIGHT;
   var g;
-  var rightDown = false;
+  var keysPressed = {};
+  keysPressed['right'] = false;
+  keysPressed['left'] = false;
   var leftDown = false;
   var carray = new Array();
 
@@ -37,15 +39,14 @@
 
   // Get Key Input
   function onKeyDown(evt){
-    if(evt.keyCode == 39) rightDown = true;
-    else if(evt.keyCode == 37) leftDown = true;
+    if(evt.keyCode == 39) keysPressed['right'] = true; 
+    else if(evt.keyCode == 37) keysPressed['left'] = true;
     dx = dx*-1;
   }
 
-  function onKeyUp(evt) 
-  {
-    if (evt.keyCode == 39) rightDown = false;
-    else if (evt.keyCode == 37) leftDown = false;
+  function onKeyUp(evt){
+    if(evt.keyCode == 39) keysPressed['right'] = false; 
+    else if(evt.keyCode == 37) keysPressed['left'] = false;
     dx = dx*-1;
   }
 
@@ -101,14 +102,21 @@
   function Playa(x,y){
     this.x = x;
     this.y = y;
+    this.angle = 0;
 
     this.draw = function(){
+      if (keysPressed['left']) this.angle = bumpAngle(this.angle, -0.05)
+      if (keysPressed['right']) this.angle = bumpAngle(this.angle, 0.05)
+      g.fillStyle = "#CCC";
+      
       g.beginPath();
-      g.moveTo(x, y - 20);
-      g.lineTo(x + 7, y + 5);
-      g.lineTo(x - 7, y + 5);
-      g.lineTo(x - 7, y + 5);
-      g.stroke();
+      this.front = rotateAroundPoint(x, y-20, this.x, this.y, this.angle);
+      g.moveTo(this.front[0], this.front[1]);
+      this.backRight = rotateAroundPoint(x + 7, y + 5, this.x, this.y, this.angle);
+      g.lineTo(this.backRight[0], this.backRight[1]);
+      this.backLeft = rotateAroundPoint(x - 7, y + 5, this.x, this.y, this.angle);
+      g.lineTo(this.backLeft[0], this.backLeft[1]);
+      g.fill();
     }
 
     this.getX = function()
@@ -155,6 +163,18 @@
   {
     g.fillStyle = "#fff";
     g.fillRect(0, 0, WIDTH, HEIGHT);
+  }
+
+  function bumpAngle(angle, change) {
+    angle += change;
+    if (angle < 0) angle += 365;
+    return angle;
+  }
+
+  function rotateAroundPoint(pointX, pointY, centerX, centerY, angle) {
+    newX = Math.cos(angle) * (pointX-centerX) - Math.sin(angle) * (pointY-centerY) + centerX;
+    newY = Math.sin(angle) * (pointX-centerX) + Math.cos(angle) * (pointY-centerY) + centerY;
+    return [newX, newY];
   }
 
   // Use JQuery to wait for document load
