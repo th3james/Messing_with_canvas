@@ -40,14 +40,14 @@
   // Get Key Input
   function onKeyDown(evt){
     if(evt.keyCode == 39) keysPressed['right'] = true; 
+    if(evt.keyCode == 38) keysPressed['up'] = true; 
     else if(evt.keyCode == 37) keysPressed['left'] = true;
-    dx = dx*-1;
   }
 
   function onKeyUp(evt){
     if(evt.keyCode == 39) keysPressed['right'] = false; 
+    if(evt.keyCode == 38) keysPressed['up'] = false; 
     else if(evt.keyCode == 37) keysPressed['left'] = false;
-    dx = dx*-1;
   }
 
 
@@ -100,21 +100,29 @@
 
   // ChannelFlags Class 
   function Playa(x,y){
+    this.speed = 1
+
     this.x = x;
     this.y = y;
     this.angle = 0;
 
     this.draw = function(){
-      if (keysPressed['left']) this.angle = bumpAngle(this.angle, -0.05)
-      if (keysPressed['right']) this.angle = bumpAngle(this.angle, 0.05)
+      //Handle keypresses
+      if (keysPressed['left']) this.angle = bumpAngle(this.angle, -0.05);
+      if (keysPressed['right']) this.angle = bumpAngle(this.angle, 0.05);
+      if (keysPressed['up']){
+        newPos = rotateAroundPoint(this.x, this.y - this.speed, this.x, this.y, this.angle) // this could be optimised
+        this.x = newPos[0];
+        this.y = newPos[1];
+      }
       g.fillStyle = "#CCC";
       
       g.beginPath();
-      this.front = rotateAroundPoint(x, y-20, this.x, this.y, this.angle);
+      this.front = rotateAroundPoint(this.x, this.y-20, this.x, this.y, this.angle);
       g.moveTo(this.front[0], this.front[1]);
-      this.backRight = rotateAroundPoint(x + 7, y + 5, this.x, this.y, this.angle);
+      this.backRight = rotateAroundPoint(this.x + 7, this.y + 5, this.x, this.y, this.angle);
       g.lineTo(this.backRight[0], this.backRight[1]);
-      this.backLeft = rotateAroundPoint(x - 7, y + 5, this.x, this.y, this.angle);
+      this.backLeft = rotateAroundPoint(this.x - 7, this.y + 5, this.x, this.y, this.angle);
       g.lineTo(this.backLeft[0], this.backLeft[1]);
       g.fill();
     }
@@ -127,22 +135,6 @@
     this.getY = function()
     {
       return this.y;
-    }
-
-    this.move = function()
-    {   
-      this.x += this.dx;
-      this.y += this.dy;
-
-      if(this.x > WIDTH || this.x < 0)
-      {
-        this.dx = this.dx*-1;
-      }
-
-      if(this.y > HEIGHT || this.y < 0)
-      {
-        this.dy = this.dy*-1;
-      }
     }
   }
 
